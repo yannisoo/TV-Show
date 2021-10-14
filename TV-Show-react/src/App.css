@@ -1,0 +1,20 @@
+.home{
+  height: 75px;
+  width: 75px;
+  margin: 10px;
+}
+.Holder{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+footer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: lightblue;
+  height: 75px;
+  text-align: center;
+  padding: auto;
+}
