@@ -12,11 +12,21 @@ import { HttpErrorFilter } from './shared/http-error.filter';
 import { ValidationPipe } from './shared/validation.pipe';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), ShowModule, UserModule],
+  imports: [TypeOrmModule.forRoot({
+    type: "postgres",
+    host: "0.0.0.0",
+    username: "admin",
+    password: "admin",
+    synchronize: true,
+    logging: true,
+    database: "demo",
+    port: 5434,
+    entities: ["./**/*.entity.js"]
+  }
+  ), ShowModule, UserModule],
   controllers: [AppController],
   providers: [
-    AppService,
-    {
+    AppService,    {
       provide: APP_FILTER,
       useClass: HttpErrorFilter,
     },
