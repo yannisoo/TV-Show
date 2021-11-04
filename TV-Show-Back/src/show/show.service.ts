@@ -11,13 +11,13 @@ export class ShowService {
     @InjectRepository(ShowEntity)
     private showRepository: Repository<ShowEntity>,
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>
   ) {}
 
   private responseOject = (show: ShowEntity): ShowSO => {
     return {
       ...show,
-      author: show.author.sanitizeObject(),
+      author: show.author.sanitizeObject()
     };
   };
 
@@ -27,42 +27,42 @@ export class ShowService {
     }
   };
 
-  getAllShows = async (userId: string): Promise<ShowSO[]> => {
+  async getAllShows(userId: string): Promise<ShowSO[]> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     const shows = await this.showRepository.find({
       where: { author: user },
       order: { createdOn: 'DESC' },
-      relations: ['author'],
+      relations: ['author']
     });
     return shows.map((show) => {
       this.verifyOwnership(show, userId);
       return this.responseOject(show);
     });
-  };
+  }
 
-  createShow = async (
+  async createShow(
     userId: string,
-    content: Extract<ShowDTO, 'content'>,
-  ): Promise<ShowSO> => {
+    content: Extract<ShowDTO, 'content'>
+  ): Promise<ShowSO> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const newShow = this.showRepository.create({
       content,
-      author: user,
+      author: user
     });
     await this.showRepository.save(newShow);
 
     return this.responseOject(newShow);
-  };
+  }
 
-  updateShow = async (
+  async updateShow(
     userId: string,
     id: string,
-    data: Partial<ShowDTO>,
-  ): Promise<ShowSO> => {
+    data: Partial<ShowDTO>
+  ): Promise<ShowSO> {
     const show = await this.showRepository.findOne(
       { id },
-      { relations: ['author'] },
+      { relations: ['author'] }
     );
 
     if (!show) throw new HttpException('Item not found', HttpStatus.NOT_FOUND);
@@ -76,12 +76,12 @@ export class ShowService {
     }
 
     return this.responseOject(show);
-  };
+  }
 
-  deleteShow = async (userId: string, id: string): Promise<ShowSO> => {
+  async deleteShow(userId: string, id: string): Promise<ShowSO> {
     const show = await this.showRepository.findOne(
       { id },
-      { relations: ['author'] },
+      { relations: ['author'] }
     );
 
     if (!show) throw new HttpException('Item not found', HttpStatus.NOT_FOUND);
@@ -90,5 +90,5 @@ export class ShowService {
     await this.showRepository.remove(show);
 
     return this.responseOject(show);
-  };
+  }
 }

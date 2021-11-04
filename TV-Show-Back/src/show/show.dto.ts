@@ -14,5 +14,4 @@ export type ShowSO = {
   createdOn: Date;
   completed: boolean;
   author: UserSO;
-  token?: string;
 };

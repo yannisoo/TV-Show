@@ -8,13 +8,14 @@ import { UserModule } from './user/user.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-
 @Module({
-  imports: [ConfigModule.forRoot(),
-    TypeOrmModule.forRoot(), ShowModule, UserModule],
-  controllers: [AppController],
-  providers: [
-    AppService
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot(),
+    ShowModule,
+    UserModule
   ],
+  controllers: [AppController],
+  providers: [AppService]
 })
 export class AppModule {}

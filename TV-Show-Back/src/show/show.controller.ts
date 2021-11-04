@@ -5,9 +5,9 @@ import {
   Patch,
   Delete,
   Body,
-  Query,
   UseGuards,
   Req,
+  Param
 } from '@nestjs/common';
 
 import { ShowService } from './show.service';
@@ -19,33 +19,33 @@ import { AuthGuard } from 'src/shared/auth.guard';
 export class ShowController {
   constructor(private showService: ShowService) {}
 
-  @Get('/all')
+  @Get()
   getAllShows(@Req() req) {
     const userId = req.user.id;
     return this.showService.getAllShows(userId);
   }
 
-  @Post('/create')
+  @Post()
   createShow(
     @Req() req,
-    @Body('content') content: Extract<ShowDTO, 'content'>,
+    @Body('content') content: Extract<ShowDTO, 'content'>
   ) {
     const userId = req.user.id;
     return this.showService.createShow(userId, content);
   }
 
-  @Patch('/update')
+  @Patch(':id')
   updateShow(
-    @Query('id') id: string,
+    @Param('id') id: string,
     @Req() req,
-    @Body() data: Partial<ShowDTO>,
+    @Body() data: Partial<ShowDTO>
   ) {
     const userId = req.user.id;
     return this.showService.updateShow(userId, id, data);
   }
 
-  @Delete('/delete')
-  deleteShow(@Req() req, @Query('id') id: string) {
+  @Delete()
+  deleteShow(@Req() req, @Param('id') id: string) {
     const userId = req.user.id;
     return this.showService.deleteShow(userId, id);
   }
