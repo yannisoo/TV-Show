@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   BeforeInsert,
-  OneToMany,
+  OneToMany
 } from 'typeorm';
 
 import { hash, compare } from 'bcryptjs';
@@ -19,7 +19,7 @@ export class UserEntity {
 
   @Column({
     type: 'text',
-    unique: true,
+    unique: true
   })
   email: string;
 
@@ -30,9 +30,9 @@ export class UserEntity {
   createdOn: Date;
 
   @BeforeInsert()
-  hashPassword = async () => {
+  async hashPassword() {
     this.password = await hash(this.password, 8);
-  };
+  }
 
   @OneToMany(() => ShowEntity, (show) => show.author)
   shows: ShowEntity[];
@@ -41,24 +41,24 @@ export class UserEntity {
     return await compare(attempt, this.password);
   };
 
-  sanitizeObject = (options?: SanitizeUserOptions): UserSO => {
+  sanitizeObject(options?: SanitizeUserOptions): UserSO {
     const { id, createdOn, email, token } = this;
     const responseObj = { id, createdOn, email };
     if (options?.withToken) {
       Object.assign(responseObj, { token });
     }
     return responseObj;
-  };
+  }
 
   private get token() {
     const { id, email } = this;
     return sign(
       {
         id,
-        email,
+        email
       },
       process.env.SECRET,
-      { expiresIn: '3d' },
+      { expiresIn: '3d' }
     );
   }
 }

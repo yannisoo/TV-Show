@@ -3,7 +3,7 @@ import {
   Column,
   Entity,
   CreateDateColumn,
-  ManyToOne,
+  ManyToOne
 } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
 
@@ -14,7 +14,7 @@ export class ShowEntity {
 
   @Column({
     type: 'text',
-    nullable: true,
+    nullable: true
   })
   showId: string;
 
@@ -23,7 +23,7 @@ export class ShowEntity {
 
   @Column({
     type: 'boolean',
-    default: false,
+    default: false
   })
   completed: boolean;
 

@@ -8,22 +8,22 @@ import { UserDTO, UserSO } from './user.dto';
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>
   ) {}
 
-  login = async (data: UserDTO): Promise<UserSO> => {
+  async login(data: UserDTO): Promise<UserSO> {
     const { email, password } = data;
     const user = await this.userRepository.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
         'Invalid email or password',
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.UNAUTHORIZED
       );
     }
     return user.sanitizeObject({ withToken: true });
-  };
+  }
 
-  register = async (data: UserDTO): Promise<UserSO> => {
+  async register(data: UserDTO): Promise<UserSO> {
     const { email } = data;
     let user = await this.userRepository.findOne({ email });
     if (user) {
@@ -33,12 +33,12 @@ export class UserService {
       await this.userRepository.save(user);
       return user.sanitizeObject({ withToken: true });
     }
-  };
+  }
 
-  getProfile = async (email: string): Promise<any> => {
+  async getProfile(email: string): Promise<any> {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user)
       throw new HttpException('Email does not exists', HttpStatus.NOT_FOUND);
     return user.sanitizeObject({ withToken: true });
-  };
+  }
 }

@@ -11,13 +11,13 @@ export class ShowService {
     @InjectRepository(ShowEntity)
     private showRepository: Repository<ShowEntity>,
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>
   ) {}
 
   private responseOject = (show: ShowEntity): ShowSO => {
     return {
       ...show,
-      author: show.author.sanitizeObject(),
+      author: show.author.sanitizeObject()
     };
   };
 
@@ -35,13 +35,13 @@ export class ShowService {
     const shows = await this.showRepository.find({
       where: { author: user },
       order: { createdOn: 'DESC' },
-      relations: ['author'],
+      relations: ['author']
     });
     return shows.map((show) => {
       this.verifyOwnership(show, userId);
       return this.responseOject(show);
     });
-  };
+  }
 
   private _createShow = async (
     userId: string,
@@ -66,14 +66,14 @@ export class ShowService {
     this._createShow = value;
   }
 
-  updateShow = async (
+  async updateShow(
     userId: string,
     id: string,
-    data: Partial<ShowDTO>,
-  ): Promise<ShowSO> => {
+    data: Partial<ShowDTO>
+  ): Promise<ShowSO> {
     const show = await this.showRepository.findOne(
       { id },
-      { relations: ['author'] },
+      { relations: ['author'] }
     );
 
     if (!show) throw new HttpException('Item not found', HttpStatus.NOT_FOUND);
@@ -84,12 +84,12 @@ export class ShowService {
     }
 
     return this.responseOject(show);
-  };
+  }
 
-  deleteShow = async (userId: string, id: string): Promise<ShowSO> => {
+  async deleteShow(userId: string, id: string): Promise<ShowSO> {
     const show = await this.showRepository.findOne(
       { id },
-      { relations: ['author'] },
+      { relations: ['author'] }
     );
 
     if (!show) throw new HttpException('Item not found', HttpStatus.NOT_FOUND);
@@ -98,5 +98,5 @@ export class ShowService {
     await this.showRepository.remove(show);
 
     return this.responseOject(show);
-  };
+  }
 }

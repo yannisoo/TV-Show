@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import './App.css';
 import Home  from "./components/home";
+import Login from './components/login';
 import Show from "./components/show";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         </nav>
 
         <Switch>
+          <Route path="/login" component={Login}/>
           <Route path="/show/:id" component={Show}/>
           <Route path="/" component={Home}/>
         </Switch>

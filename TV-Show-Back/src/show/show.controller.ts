@@ -5,9 +5,9 @@ import {
   Patch,
   Delete,
   Body,
-  Query,
   UseGuards,
   Req,
+  Param
 } from '@nestjs/common';
 
 import { ShowService } from './show.service';
@@ -35,18 +35,18 @@ export class ShowController {
     return this.showService.createShow(userId, showId, seen);
   }
 
-  @Patch('/')
+  @Patch(':id')
   updateShow(
-    @Query('id') id: string,
+    @Param('id') id: string,
     @Req() req,
-    @Body() data: Partial<ShowDTO>,
+    @Body() data: Partial<ShowDTO>
   ) {
     const userId = req.user.id;
     return this.showService.updateShow(userId, id, data);
   }
 
-  @Delete('/')
-  deleteShow(@Req() req, @Query('id') id: string) {
+  @Delete(':id')
+  deleteShow(@Req() req, @Param('id') id: string) {
     const userId = req.user.id;
     return this.showService.deleteShow(userId, id);
   }
