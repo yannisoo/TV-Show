@@ -16,7 +16,7 @@ export class ShowEntity {
     type: 'text',
     nullable: true,
   })
-  content: string;
+  showId: string;
 
   @CreateDateColumn()
   createdOn: Date;

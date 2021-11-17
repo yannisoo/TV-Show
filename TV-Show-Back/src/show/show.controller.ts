@@ -19,22 +19,23 @@ import { AuthGuard } from 'src/shared/auth.guard';
 export class ShowController {
   constructor(private showService: ShowService) {}
 
-  @Get('/all')
+  @Get('/')
   getAllShows(@Req() req) {
     const userId = req.user.id;
     return this.showService.getAllShows(userId);
   }
 
-  @Post('/create')
+  @Post('/')
   createShow(
     @Req() req,
-    @Body('content') content: Extract<ShowDTO, 'content'>,
+    @Body('showId') showId: Extract<ShowDTO, 'showId'>,
+    @Body('seen') seen: Extract<ShowDTO, 'seen'>,
   ) {
     const userId = req.user.id;
-    return this.showService.createShow(userId, content);
+    return this.showService.createShow(userId, showId, seen);
   }
 
-  @Patch('/update')
+  @Patch('/')
   updateShow(
     @Query('id') id: string,
     @Req() req,
@@ -44,7 +45,7 @@ export class ShowController {
     return this.showService.updateShow(userId, id, data);
   }
 
-  @Delete('/delete')
+  @Delete('/')
   deleteShow(@Req() req, @Query('id') id: string) {
     const userId = req.user.id;
     return this.showService.deleteShow(userId, id);

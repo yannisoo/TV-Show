@@ -28,7 +28,9 @@ export class ShowService {
   };
 
   getAllShows = async (userId: string): Promise<ShowSO[]> => {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
 
     const shows = await this.showRepository.find({
       where: { author: user },
@@ -41,19 +43,28 @@ export class ShowService {
     });
   };
 
-  createShow = async (
+  private _createShow = async (
     userId: string,
-    content: Extract<ShowDTO, 'content'>,
+    showId: Extract<ShowDTO, 'content'>,
+    seen: Extract<ShowDTO, 'seen'>,
   ): Promise<ShowSO> => {
     const user = await this.userRepository.findOne({ where: { id: userId } });
+    const completed = 'true' ? true : false;
     const newShow = this.showRepository.create({
-      content,
+      showId,
       author: user,
+      completed: completed,
     });
     await this.showRepository.save(newShow);
 
     return this.responseOject(newShow);
   };
+  public get createShow() {
+    return this._createShow;
+  }
+  public set createShow(value) {
+    this._createShow = value;
+  }
 
   updateShow = async (
     userId: string,
@@ -70,9 +81,6 @@ export class ShowService {
 
     if (data.hasOwnProperty('completed')) {
       await this.showRepository.update({ id }, { completed: data.seen });
-    }
-    if (data.content) {
-      await this.showRepository.update({ id }, { content: data.content });
     }
 
     return this.responseOject(show);
