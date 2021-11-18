@@ -20,7 +20,11 @@ const Login: React.FC = () => {
         "password":user.password,
     };
     LoginService.login(payload).then(response => 
-      localStorage.setItem('token', response.data.token))
+      localStorage.setItem('token', response.data.token)
+      // redirect to home page
+      ).then(() => {
+        window.location.href = '/';
+      })
 }
 
   const onChangeHandler = (
@@ -38,13 +42,13 @@ const Login: React.FC = () => {
   
   return (
     <div>
-        <h2>Log in</h2>
-            <form onSubmit={onSubmit}>
+        <h2 className="login">Log in</h2>
+            <form className="form-control" onSubmit={onSubmit}>
                 <input 
                     id="email"
                     type="text"
                     placeholder="email"
-                    className="form-control" 
+                    className="form-input" 
                     value={user.email}
                     onChange={onChangeHandler}
                     required
@@ -52,12 +56,14 @@ const Login: React.FC = () => {
                 <input 
                     id="password"
                     type="password" 
+                    className="form-input" 
                     onChange={onChangeHandler}
                     value={user.password}
                     placeholder="password"
                     required
                 />
-                <button type="submit">
+                <button type="submit"
+                    className="form-input" >
                     se connecter
                 </button>
             </form>      

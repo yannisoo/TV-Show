@@ -35,7 +35,7 @@ const Home: React.FC = () => {
         value={searchTitle}
         onChange={onChangeSearchTitle}
         />
-      <button  >
+      <button className="homeButton">
         Search
       </button>
 

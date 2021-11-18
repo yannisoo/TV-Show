@@ -18,3 +18,12 @@ footer{
   text-align: center;
   padding: auto;
 }
+nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: lightblue;
+  height: 75px;
+  text-align: center;
+  padding: auto;
+}
