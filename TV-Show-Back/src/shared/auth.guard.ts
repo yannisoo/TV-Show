@@ -3,7 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   HttpException,
-  HttpStatus,
+  HttpStatus
 } from '@nestjs/common';
 
 import { verify } from 'jsonwebtoken';

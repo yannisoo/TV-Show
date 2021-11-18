@@ -7,16 +7,16 @@ import { ShowModule } from './show/show.module';
 import { UserModule } from './user/user.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ApiService } from './api/api.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(),
     ShowModule,
-    UserModule,
+    UserModule
   ],
   controllers: [AppController],
-  providers: [AppService],
-
+  providers: [AppService, ApiService]
 })
 export class AppModule {}

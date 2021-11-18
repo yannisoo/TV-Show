@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ShowEntity } from './show.entity';
 import { ShowDTO, ShowSO } from './show.dto';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Injectable()
 export class ShowService {
@@ -29,7 +29,7 @@ export class ShowService {
 
   getAllShows = async (userId: string): Promise<ShowSO[]> => {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: userId }
     });
 
     const shows = await this.showRepository.find({
@@ -41,19 +41,19 @@ export class ShowService {
       this.verifyOwnership(show, userId);
       return this.responseOject(show);
     });
-  }
+  };
 
   private _createShow = async (
     userId: string,
     showId: Extract<ShowDTO, 'content'>,
-    seen: Extract<ShowDTO, 'seen'>,
+    seen: Extract<ShowDTO, 'seen'>
   ): Promise<ShowSO> => {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    const completed = 'true' ? true : false;
+    const completed = seen == true ? true : false;
     const newShow = this.showRepository.create({
       showId,
       author: user,
-      completed: completed,
+      completed: completed
     });
     await this.showRepository.save(newShow);
 
@@ -66,29 +66,33 @@ export class ShowService {
     this._createShow = value;
   }
 
-  async updateShow(
-    userId: string,
-    id: string,
-    data: Partial<ShowDTO>
-  ): Promise<ShowSO> {
+  async updateShow(userId: string, id: string): Promise<ShowSO> {
     const show = await this.showRepository.findOne(
-      { id },
+      { showId: id },
       { relations: ['author'] }
     );
 
     if (!show) throw new HttpException('Item not found', HttpStatus.NOT_FOUND);
     this.verifyOwnership(show, userId);
 
-    if (data.hasOwnProperty('completed')) {
-      await this.showRepository.update({ id }, { completed: data.seen });
-    }
+    const value = show.completed !== true ? true : false;
+    this.showRepository.update({ showId: id }, { completed: value });
+    return this.responseOject(show);
+  }
+  async isItSaved(userId: string, id: string): Promise<ShowSO> {
+    const show = await this.showRepository.findOne(
+      { showId: id },
+      { relations: ['author'] }
+    );
 
+    if (!show) return null;
+    this.verifyOwnership(show, userId);
     return this.responseOject(show);
   }
 
   async deleteShow(userId: string, id: string): Promise<ShowSO> {
     const show = await this.showRepository.findOne(
-      { id },
+      { showId: id },
       { relations: ['author'] }
     );
 

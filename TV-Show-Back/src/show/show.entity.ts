@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   ManyToOne
 } from 'typeorm';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('show')
 export class ShowEntity {

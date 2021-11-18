@@ -12,7 +12,7 @@ import {
 
 import { ShowService } from './show.service';
 import { ShowDTO } from './show.dto';
-import { AuthGuard } from 'src/shared/auth.guard';
+import { AuthGuard } from '../shared/auth.guard';
 
 @Controller('show')
 @UseGuards(new AuthGuard())
@@ -24,28 +24,29 @@ export class ShowController {
     const userId = req.user.id;
     return this.showService.getAllShows(userId);
   }
+  @Get('/:id')
+  isItSaved(@Req() req, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.showService.isItSaved(userId, id);
+  }
 
   @Post('/')
   createShow(
     @Req() req,
     @Body('showId') showId: Extract<ShowDTO, 'showId'>,
-    @Body('seen') seen: Extract<ShowDTO, 'seen'>,
+    @Body('seen') seen: Extract<ShowDTO, 'seen'>
   ) {
     const userId = req.user.id;
     return this.showService.createShow(userId, showId, seen);
   }
 
-  @Patch(':id')
-  updateShow(
-    @Param('id') id: string,
-    @Req() req,
-    @Body() data: Partial<ShowDTO>
-  ) {
+  @Patch('/:id')
+  updateShow(@Req() req, @Param('id') id: string) {
     const userId = req.user.id;
-    return this.showService.updateShow(userId, id, data);
+    return this.showService.updateShow(userId, id);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   deleteShow(@Req() req, @Param('id') id: string) {
     const userId = req.user.id;
     return this.showService.deleteShow(userId, id);

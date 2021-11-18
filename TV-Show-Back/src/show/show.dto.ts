@@ -1,5 +1,5 @@
 import { IsString, IsBoolean } from 'class-validator';
-import { UserSO } from 'src/user/user.dto';
+import { UserSO } from '../user/user.dto';
 
 export class ShowDTO {
   @IsString()
