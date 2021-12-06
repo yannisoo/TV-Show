@@ -34,7 +34,7 @@ export class UserEntity {
     this.password = await hash(this.password, 8);
   }
 
-  @OneToMany(() => ShowEntity, (show) => show.author)
+  @OneToMany(() => ShowEntity, (show) => show.author, { onDelete: 'CASCADE' })
   shows: ShowEntity[];
 
   comparePassword = async (attempt: string) => {

@@ -12,7 +12,8 @@ import { verify } from 'jsonwebtoken';
 export class AuthGuard implements CanActivate {
   canActivate = async (context: ExecutionContext): Promise<boolean> => {
     const request = context.switchToHttp().getRequest();
-    if (!request.headers.autorization) return false;
+    if (!request.headers.autorization)
+      throw new HttpException('Unauthorized token', HttpStatus.UNAUTHORIZED);
 
     request.user = await this.verifyToken(request.headers.autorization);
     return true;
@@ -21,7 +22,7 @@ export class AuthGuard implements CanActivate {
   private verifyToken = async (auth: string) => {
     const authHeader = auth.split(' ');
     if (authHeader[0] !== 'Bearer') {
-      throw new HttpException('Unauthorized token', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Unauthorized tokeni', HttpStatus.UNAUTHORIZED);
     }
     try {
       const token = authHeader[1];

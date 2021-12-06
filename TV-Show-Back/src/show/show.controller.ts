@@ -14,7 +14,7 @@ import { ShowService } from './show.service';
 import { ShowDTO } from './show.dto';
 import { AuthGuard } from '../shared/auth.guard';
 
-@Controller('show')
+@Controller('shows')
 @UseGuards(new AuthGuard())
 export class ShowController {
   constructor(private showService: ShowService) {}

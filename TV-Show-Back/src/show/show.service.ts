@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ShowEntity } from './show.entity';
-import { ShowDTO, ShowSO } from './show.dto';
+import { ShowDTO } from './show.dto';
 import { UserEntity } from '../user/user.entity';
 
 @Injectable()
@@ -14,20 +14,13 @@ export class ShowService {
     private userRepository: Repository<UserEntity>
   ) {}
 
-  private responseOject = (show: ShowEntity): ShowSO => {
-    return {
-      ...show,
-      author: show.author.sanitizeObject()
-    };
-  };
-
   private verifyOwnership = (show: ShowEntity, userId: string) => {
     if (show.author.id !== userId) {
       throw new HttpException('Incorrect User', HttpStatus.UNAUTHORIZED);
     }
   };
 
-  getAllShows = async (userId: string): Promise<ShowSO[]> => {
+  getAllShows = async (userId: string): Promise<ShowEntity[]> => {
     const user = await this.userRepository.findOne({
       where: { id: userId }
     });
@@ -37,17 +30,14 @@ export class ShowService {
       order: { createdOn: 'DESC' },
       relations: ['author']
     });
-    return shows.map((show) => {
-      this.verifyOwnership(show, userId);
-      return this.responseOject(show);
-    });
+    return shows;
   };
 
   private _createShow = async (
     userId: string,
     showId: Extract<ShowDTO, 'content'>,
     seen: Extract<ShowDTO, 'seen'>
-  ): Promise<ShowSO> => {
+  ): Promise<ShowEntity> => {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const completed = seen == true ? true : false;
     const newShow = this.showRepository.create({
@@ -57,7 +47,7 @@ export class ShowService {
     });
     await this.showRepository.save(newShow);
 
-    return this.responseOject(newShow);
+    return newShow;
   };
   public get createShow() {
     return this._createShow;
@@ -66,7 +56,7 @@ export class ShowService {
     this._createShow = value;
   }
 
-  async updateShow(userId: string, id: string): Promise<ShowSO> {
+  async updateShow(userId: string, id: string): Promise<ShowEntity> {
     const show = await this.showRepository.findOne(
       { showId: id },
       { relations: ['author'] }
@@ -77,9 +67,9 @@ export class ShowService {
 
     const value = show.completed !== true ? true : false;
     this.showRepository.update({ showId: id }, { completed: value });
-    return this.responseOject(show);
+    return show;
   }
-  async isItSaved(userId: string, id: string): Promise<ShowSO> {
+  async isItSaved(userId: string, id: string): Promise<ShowEntity> {
     const show = await this.showRepository.findOne(
       { showId: id },
       { relations: ['author'] }
@@ -87,10 +77,10 @@ export class ShowService {
 
     if (!show) return null;
     this.verifyOwnership(show, userId);
-    return this.responseOject(show);
+    return show;
   }
 
-  async deleteShow(userId: string, id: string): Promise<ShowSO> {
+  async deleteShow(userId: string, id: string): Promise<ShowEntity> {
     const show = await this.showRepository.findOne(
       { showId: id },
       { relations: ['author'] }
@@ -101,6 +91,6 @@ export class ShowService {
 
     await this.showRepository.remove(show);
 
-    return this.responseOject(show);
+    return show;
   }
 }

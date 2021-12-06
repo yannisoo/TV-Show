@@ -27,6 +27,8 @@ export class ShowEntity {
   })
   completed: boolean;
 
-  @ManyToOne(() => UserEntity, (author) => author.shows)
+  @ManyToOne(() => UserEntity, (author) => author.shows, {
+    onDelete: 'CASCADE'
+  })
   author: UserEntity;
 }

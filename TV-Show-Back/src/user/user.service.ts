@@ -35,10 +35,11 @@ export class UserService {
     }
   }
 
-  async getProfile(email: string): Promise<any> {
+  async getProfile(email: string): Promise<UserSO> {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user)
       throw new HttpException('Email does not exists', HttpStatus.NOT_FOUND);
-    return user.sanitizeObject({ withToken: true });
+    const myReturn = user.sanitizeObject({ withToken: true });
+    return myReturn;
   }
 }
